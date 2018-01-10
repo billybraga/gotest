@@ -2,31 +2,12 @@ package main
 
 import (
 	"net/http"
-	"html/template"
 	"io/ioutil"
-	"encoding/json"
 	"fmt"
-	//"github.com/nytimes/gziphandler"
+	//"github.com/pkg/profile"
 )
 
-type Item struct {
-	Name string
-	Description string
-}
-
-func handler(w http.ResponseWriter, r *http.Request, t *template.Template) {
-	if t.Tree == nil || t.Tree.Root == nil {
-		w.Write([]byte("Template null"))
-		return
-	}
-	l := len(t.Tree.Root.Nodes)
-	if l <= 0 {
-		w.Write([]byte("Empty template"))
-		return
-	}
-
-	var data [100][]Item
-
+func handler(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < 100; i++ {
 		file, err := ioutil.ReadFile(fmt.Sprintf("./data/list%d.json", (i % 3) + 1))
 		if err != nil {
@@ -34,27 +15,13 @@ func handler(w http.ResponseWriter, r *http.Request, t *template.Template) {
 			return
 		}
 
-		json.Unmarshal(file, &data[i])
-	}
-
-	e := t.Execute(w, data)
-	if e != nil {
-		panic(e)
-		return
+		w.Write(file)
 	}
 }
 
 func main() {
-	//http.Handle("/", gziphandler.GzipHandler(http.HandlerFunc(handler)))
+	//defer profile.Start(profile.CPUProfile).Stop()
 
-	t, e := template.ParseFiles("views/home.html")
-	if e != nil {
-		panic(e)
-		return
-	}
-
-	http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
-		handler(w, r, t)
-	})
+	http.HandleFunc("/", handler)
 	http.ListenAndServe(":8081", nil)
 }

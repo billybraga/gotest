@@ -50,6 +50,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.Handle("/", gziphandler.GzipHandler(http.HandlerFunc(handler)))
+	//http.Handle("/", gziphandler.GzipHandler(http.HandlerFunc(handler)))
+	http.HandleFunc("/", handler)
 	http.ListenAndServe(":8081", nil)
 }

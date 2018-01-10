@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Type=simple
 User=billy
-Group=billy
+Group=admin
 LimitNOFILE=1024
 
 Restart=always

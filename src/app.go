@@ -2,20 +2,26 @@ package main
 
 import (
 	"net/http"
-	"io/ioutil"
+	//"io/ioutil"
 	"fmt"
 	//"github.com/pkg/profile"
+	"io"
+	"os"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < 100; i++ {
-		file, err := ioutil.ReadFile(fmt.Sprintf("./data/list%d.json", (i % 3) + 1))
+		fileReader, err := os.Open(fmt.Sprintf("./data/list%d.json", (i % 3) + 1))
 		if err != nil {
 			panic(err)
 			return
 		}
 
-		w.Write(file)
+		_, err = io.Copy(w, fileReader)
+		if err != nil {
+			panic(err)
+			return
+		}
 	}
 }
 

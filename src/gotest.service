@@ -1,0 +1,26 @@
+[Unit]
+Description=gotest
+ConditionPathExists=/home/billy/go/src/github.com/billybraga/gotest
+After=network.target
+
+[Service]
+Type=simple
+User=billy
+Group=billy
+LimitNOFILE=1024
+
+Restart=on-failure
+RestartSec=10
+startLimitIntervalSec=60
+
+WorkingDirectory=/home/billy/go/src/github.com/billybraga/gotest
+ExecStart=/usr/local/go/bin/go run /home/billy/go/src/github.com/billybraga/gotest/src/app.go
+
+# make sure log directory exists and owned by syslog
+PermissionsStartOnly=true
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=gotest
+
+[Install]
+WantedBy=multi-user.target

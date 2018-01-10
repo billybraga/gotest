@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"fmt"
-	"github.com/nytimes/gziphandler"
+	//"github.com/nytimes/gziphandler"
 )
 
 type Item struct {

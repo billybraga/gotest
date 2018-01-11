@@ -10,6 +10,8 @@ import (
 )
 
 func handler(ctx *fasthttp.RequestCtx) {
+	defer ctx.SetConnectionClose()
+
 	for i := 0; i < 100; i++ {
 		fileReader, err := os.Open(fmt.Sprintf("./data/list%d.json", (i % 3) + 1))
 		if err != nil {

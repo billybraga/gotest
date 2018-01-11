@@ -1,7 +1,7 @@
 package main
 
 import (
-	"net/http"
+	"github.com/valyala/fasthttp"
 	//"io/ioutil"
 	"fmt"
 	//"github.com/pkg/profile"
@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func handler(ctx *fasthttp.RequestCtx) {
 	for i := 0; i < 100; i++ {
 		fileReader, err := os.Open(fmt.Sprintf("./data/list%d.json", (i % 3) + 1))
 		if err != nil {
@@ -17,7 +17,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		_, err = io.Copy(w, fileReader)
+		_, err = io.Copy(ctx.Response.BodyWriter(), fileReader)
 		if err != nil {
 			panic(err)
 			return
@@ -27,7 +27,5 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	//defer profile.Start(profile.CPUProfile).Stop()
-
-	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8081", nil)
+	fasthttp.ListenAndServe(":8081", handler)
 }

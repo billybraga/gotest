@@ -16,6 +16,7 @@ func handler(ctx *fasthttp.RequestCtx) {
 			panic(err)
 			return
 		}
+		defer fileReader.Close()
 
 		_, err = io.Copy(ctx.Response.BodyWriter(), fileReader)
 		if err != nil {
